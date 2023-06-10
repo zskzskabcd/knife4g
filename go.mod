@@ -1,4 +1,4 @@
-module github.com/hononet639/knife4g
+module github.com/zskzskabcd/knife4g
 
 go 1.18
 
@@ -24,4 +24,3 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
