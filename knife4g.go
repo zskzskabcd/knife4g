@@ -2,12 +2,12 @@ package knife4g
 
 import (
 	"embed"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"text/template"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -37,28 +37,14 @@ func init() {
 }
 
 func Handler(config Config) gin.HandlerFunc {
-	docJsonPath := config.RelativePath + "/docJson"
-	servicesPath := config.RelativePath + "/front/service"
+	docJsonPath := config.RelativePath + "/front/docJson"
+	servicesPath := config.RelativePath + "/front/static/services.json"
 	docPath := config.RelativePath + "/index"
-	appjsPath := config.RelativePath + "/front/webjars/js/app.42aa019b.js"
 
 	s.Url = "/docJson"
 	s.Location = "/docJson"
 	s.Name = "API Documentation"
 	s.SwaggerVersion = "2.0"
-
-	appjsTemplate, err := template.New("app.42aa019b.js").
-		Delims("{[(", ")]}").
-		ParseFS(front, "front/webjars/js/app.42aa019b.js")
-	if err != nil {
-		log.Println(err)
-	}
-	docTemplate, err := template.New("doc.html").
-		Delims("{[(", ")]}").
-		ParseFS(front, "front/doc.html")
-	if err != nil {
-		log.Println(err)
-	}
 
 	return func(ctx *gin.Context) {
 		if ctx.Request.Method != http.MethodGet {
@@ -66,18 +52,10 @@ func Handler(config Config) gin.HandlerFunc {
 			return
 		}
 		switch ctx.Request.RequestURI {
-		case appjsPath:
-			err := appjsTemplate.Execute(ctx.Writer, config)
-			if err != nil {
-				log.Println(err)
-			}
 		case servicesPath:
 			ctx.JSON(http.StatusOK, []service{s})
 		case docPath:
-			err := docTemplate.Execute(ctx.Writer, config)
-			if err != nil {
-				log.Println(err)
-			}
+			ctx.Redirect(http.StatusMovedPermanently, config.RelativePath+"/front/doc.html")
 		case docJsonPath:
 			ctx.Data(http.StatusOK, "application/json; charset=utf-8", docJson)
 		default:
