@@ -38,7 +38,7 @@ func init() {
 
 func Handler(config Config) gin.HandlerFunc {
 	docJsonPath := config.RelativePath + "/front/docJson"
-	servicesPath := config.RelativePath + "/front/services.json"
+	servicesPath := "/services.json"
 	docPath := config.RelativePath + "/index"
 
 	s.Url = "/docJson"
